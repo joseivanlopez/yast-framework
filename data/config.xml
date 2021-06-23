@@ -1,0 +1,106 @@
+<?xml version="1.0"?>
+<productDefines xmlns="http://www.suse.com/1.0/yast2ns" xmlns:config="http://www.suse.com/1.0/configns">
+
+    <partitioning>
+        <!-- taken from control.CAASP.xml and modified just for the purpose of testing the proposal settings UI -->
+
+        <proposal>
+            <lvm config:type="boolean">false</lvm>
+        </proposal>
+
+        <volumes config:type="list">
+            <!-- The / filesystem -->
+            <volume>
+                <mount_point>/</mount_point>
+                <fs_type>btrfs</fs_type>
+                <desired_size config:type="disksize">23 GiB</desired_size>
+                <min_size config:type="disksize">12 GiB</min_size>
+                <max_size config:type="disksize">30 GiB</max_size>
+                <weight config:type="integer">80</weight>
+
+                <snapshots config:type="boolean">true</snapshots>
+                <snapshots_configurable config:type="boolean">true</snapshots_configurable>
+
+                <!-- the default subvolume "@" was requested by product management -->
+                <btrfs_default_subvolume>@</btrfs_default_subvolume>
+
+                <!-- Subvolumes to be created for a Btrfs root file system -->
+                <!-- copy_on_write is true by default -->
+                <!-- The XML parser is very simplistic, thus not using attributes, but sub-elements -->
+                <subvolumes config:type="list">
+                    <subvolume>
+                        <path>root</path>
+                    </subvolume>
+                    <subvolume>
+                        <path>tmp</path>
+                    </subvolume>
+                    <subvolume>
+                        <path>home</path>
+                    </subvolume>
+                    <subvolume>
+                        <path>var/cache</path>
+                    </subvolume>
+                    <subvolume>
+                        <path>var/crash</path>
+                    </subvolume>
+                    <subvolume>
+                        <path>var/spool</path>
+                    </subvolume>
+
+                    <!-- architecture specific subvolumes -->
+
+                    <subvolume>
+                        <path>boot/grub2/i386-pc</path>
+                        <archs>x86_64</archs>
+                    </subvolume>
+                </subvolumes>
+            </volume>
+
+            <!-- /home partition -->
+            <volume>
+                <mount_point>/home</mount_point>
+
+                <fs_type>ext4</fs_type>
+                <fs_types>ext4, xfs, btrfs</fs_types>
+                <snapshots config:type="boolean">false</snapshots>
+
+                <proposed config:type="boolean">false</proposed>
+                <proposed_configurable config:type="boolean">true</proposed_configurable>
+
+                <desired_size config:type="disksize">20 GiB</desired_size>
+                <min_size config:type="disksize">7 GiB</min_size>
+                <max_size config:type="disksize">unlimited</max_size>
+                <weight config:type="integer">20</weight>
+
+                <!-- Give up in a separate partition if the min size doesn't fit -->
+                <disable_order config:type="integer">1</disable_order>
+
+                <!-- If this volume is disabled, we want "/" to increase -->
+                <fallback_for_desired_size>/</fallback_for_desired_size>
+                <fallback_for_max_size>/</fallback_for_max_size>
+                <fallback_for_weight>/</fallback_for_weight>
+            </volume>
+
+            <!-- swap partition -->
+            <volume>
+                <mount_point>swap</mount_point>
+                <proposed config:type="boolean">true</proposed>
+
+                <fs_type>swap</fs_type>
+                <fs_types>swap</fs_types>
+
+                <desired_size config:type="disksize">2 GiB</desired_size>
+                <min_size config:type="disksize">1 GiB</min_size>
+                <max_size config:type="disksize">16 GiB</max_size>
+                <weight config:type="integer">20</weight>
+
+                <adjust_by_ram config:type="boolean">false</adjust_by_ram>
+                <adjust_by_ram_configurable config:type="boolean">true</adjust_by_ram_configurable>
+
+                <!-- Give up in a separate partition if the min size doesn't fit -->
+                <disable_order config:type="integer">2</disable_order>
+            </volume>
+
+        </volumes>
+    </partitioning>
+</productDefines>
