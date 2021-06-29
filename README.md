@@ -1,8 +1,7 @@
 # yast-framework
 
 ~~~
-$ cd bin/
-$ ./yast-storage ../data/config.xml
-$ ./yast-storage --actions ../data/config.xml
-$ ./yast-storage --no-commit ../data/config.xml
+$ ./src/bin/yast-core --help
+$ ./src/bin/yast-core storage --help
+$ ./src/bin/yast-core storage --actions --config test/data/config.xml
 ~~~
